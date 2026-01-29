@@ -1,17 +1,114 @@
 ---
-
+import { getCollection } from 'astro:content';
+const posts = await getCollection('posts');
+// This sorts them so the newest (or last created) is at the bottom of the stream
 ---
 
 <html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Odes & Codes</title>
+    <style>
+    :root {
+        /* Faded Paper & Ink Palette */
+        --bg: #e8e4d9;          /* Aged paper */
+        --card-bg: #f4f1e6;     /* Slightly lighter folder paper */
+        --grid-line: rgba(82, 101, 85, 0.12); /* Faded military green grid */
+        --accent: #4a5d4e;      /* Dull forest green (Stamp ink) */
+        --text: #2c2c2c;        /* Typewriter ribbon black */
+        --border: rgba(0, 0, 0, 0.1);
+    }
+
+    body { 
+        background-color: var(--bg); 
+        color: var(--text); 
+        /* Classic Serif for that "printed report" feel */
+        font-family: "Times New Roman", Times, Baskerville, Georgia, serif;
+        margin: 0; 
+        padding: 80px 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .stream { width: 100%; max-width: 550px; }
+
+    h1 { 
+        font-weight: 400; 
+        letter-spacing: 15px; 
+        color: var(--accent); 
+        font-size: 0.8rem; 
+        margin-bottom: 80px;
+        text-align: center;
+        text-transform: uppercase;
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 20px;
+    }
+
+    .card {
+        background-color: var(--card-bg);
+        /* The "Graph Paper" look */
+        background-image: 
+            linear-gradient(var(--grid-line) 1px, transparent 1px),
+            linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+        background-size: 20px 20px;
+        
+        border: 1px solid var(--border);
+        padding: 45px;
+        margin-bottom: 50px;
+        position: relative;
+        /* Slight shadow like a stack of papers */
+        box-shadow: 2px 2px 0px rgba(0,0,0,0.05);
+    }
+
+    .post-body {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        margin-bottom: 35px;
+        white-space: pre-wrap;
+        color: #333;
+    }
+
+    .caption {
+        /* The Mechanical Typewriter font */
+        font-family: "Courier", "Courier New", monospace;
+        font-size: 0.8rem;
+        font-weight: bold;
+        color: var(--accent);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        border-top: 1px solid var(--border);
+        padding-top: 15px;
+    }
+
+    /* Little detail: A "classification" stamp feel */
+    .card::before {
+        content: "TOP SECRET // ODES";
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        font-family: "Courier", monospace;
+        font-size: 0.5rem;
+        color: rgba(180, 0, 0, 0.3); /* Faded red stamp */
+        letter-spacing: 2px;
+    }
+</style>
+</head>
+<body>
+    <h1>ODES & CODES</h1>
+    
+    <div class="stream">
+        {posts.map(post => (
+            <article class="card">
+                <div class="post-body">
+                    {post.body}
+                </div>
+                <div class="caption">
+                    // {post.data.caption}
+                </div>
+            </article>
+        ))}
+    </div>
+</body>
 </html>
