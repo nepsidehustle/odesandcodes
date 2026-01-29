@@ -68,8 +68,43 @@ const posts = await getCollection('posts');
             header h1 { font-size: 1.1rem; letter-spacing: 8px; }
         }
 
-        .sidebar { position: sticky; top: 40px; height: fit-content; }
+/* 1. Default state (Mobile first): Not sticky */
+        .sidebar { 
+            position: relative; 
+            top: auto; 
+            height: auto; 
+        }
 
+        /* 2. Desktop state: Sticky only on large screens */
+        @media (min-width: 851px) {
+            .layout-grid {
+                display: grid;
+                grid-template-columns: 300px 1fr;
+                gap: 40px;
+            }
+            .sidebar { 
+                position: sticky; 
+                top: 40px; 
+                height: fit-content; 
+            }
+        }
+
+        /* 3. Mobile adjustments */
+        @media (max-width: 850px) {
+            .layout-grid { 
+                display: block; /* Stack vertically */
+            }
+            header {
+                margin-bottom: 30px;
+            }
+            header h1 {
+                font-size: 1.1rem;
+                letter-spacing: 6px;
+            }
+            .sidebar {
+                margin-bottom: 40px; /* Space between About and the first card */
+            }
+        }
         .card {
             background-color: var(--card-bg);
             background-image: 
