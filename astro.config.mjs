@@ -1,5 +1,7 @@
-// @ts-check
 import { defineConfig } from 'astro/config';
 
-// https://astro.build/config
-export default defineConfig({});
+export default defineConfig({
+  // This is the "Switch" that prevents 404s on your AWS IP
+  base: process.env.DEPLOY_TARGET === 'caddy' ? '/odes' : '/',
+  outDir: './dist',
+});

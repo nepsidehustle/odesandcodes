@@ -1,0 +1,44 @@
+name: Deploy Odes and Codes
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      
+      - name: Install dependencies
+        run: npm install
+
+      # BUILD 1: For Cloudflare (.pages.dev)
+      - name: Build for Cloudflare
+        run: npm run build
+      
+      - name: Deploy to Cloudflare
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: ${{ secrets.CF_ACCOUNT_ID }}
+          command: pages deploy dist --project-name=odes-and-codes
+
+      # BUILD 2: For Caddy (AWS IP/odes)
+      - name: Build for Caddy
+        run: |
+          rm -rf dist
+          DEPLOY_TARGET=caddy npm run build
+
+      - name: Push to AWS
+        uses: easingthemes/ssh-deploy@main
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          REMOTE_HOST: ${{ secrets.SERVER_IP }}
+          REMOTE_USER: ubuntu
+          SOURCE: "dist/"
+          TARGET: "/var/www/odes/dist"
+          ARGS: "-rlgoDzvc -i --delete"
